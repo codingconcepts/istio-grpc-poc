@@ -1,0 +1,10 @@
+# Prerequisites.
+istioctl.exe
+istio-*/
+
+# Build artifacts.
+grpc-hello
+grpc-goodbye
+
+http-hello
+http-goodbye

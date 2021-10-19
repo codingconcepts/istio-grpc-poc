@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grpc-hello
+  labels:
+    app: grpc-hello
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grpc-hello
+  template:
+    metadata:
+      labels:
+        app: grpc-hello
+    spec:
+      containers:
+      - name: grpc-hello
+        image: codingconcepts/grpc-hello
+        ports:
+          - name: grpc-hello
+            containerPort: 50051
+            protocol: TCP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: grpc-hello
+spec:
+  selector:
+    app: grpc-hello
+  ports:
+    - name: grpc-hello
+      protocol: TCP
+      port: 8080
+      targetPort: 50051
+
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: grpc-hello
+spec:
+  hosts:
+  - hello.grpc.scratchpad.xyz
+  gateways:
+  - gateway
+  http:
+  - route:
+    - destination:
+        host: grpc-hello.routing-poc.svc.cluster.local
+        port:
+          number: 8080

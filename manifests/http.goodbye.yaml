@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: http-goodbye
+  labels:
+    app: http-goodbye
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: http-goodbye
+  template:
+    metadata:
+      labels:
+        app: http-goodbye
+    spec:
+      containers:
+      - name: http-goodbye
+        image: codingconcepts/http-goodbye
+        ports:
+          - name: http-goodbye
+            containerPort: 8080
+            protocol: TCP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: http-goodbye
+spec:
+  selector:
+    app: http-goodbye
+  ports:
+    - name: http-goodbye
+      protocol: TCP
+      port: 80
+      targetPort: 8080
+
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: http-goodbye
+spec:
+  hosts:
+  - goodbye.http.scratchpad.xyz
+  gateways:
+  - gateway
+  http:
+  - route:
+    - destination:
+        host: http-goodbye.routing-poc.svc.cluster.local
+        port:
+          number: 80

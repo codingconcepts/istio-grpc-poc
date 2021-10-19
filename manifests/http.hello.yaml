@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: http-hello
+  labels:
+    app: http-hello
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: http-hello
+  template:
+    metadata:
+      labels:
+        app: http-hello
+    spec:
+      containers:
+      - name: http-hello
+        image: codingconcepts/http-hello
+        ports:
+          - name: http-hello
+            containerPort: 8080
+            protocol: TCP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: http-hello
+spec:
+  selector:
+    app: http-hello
+  ports:
+    - name: http-hello
+      protocol: TCP
+      port: 80
+      targetPort: 8080
+
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: http-hello
+spec:
+  hosts:
+  - hello.http.scratchpad.xyz
+  gateways:
+  - gateway
+  http:
+  - route:
+    - destination:
+        host: http-hello.routing-poc.svc.cluster.local
+        port:
+          number: 80
