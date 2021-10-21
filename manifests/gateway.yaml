@@ -12,9 +12,4 @@ spec:
       protocol: HTTP
     hosts:
       - "*.http.scratchpad.xyz"
-  - port:
-      number: 50051
-      name: grpc-plaintext
-      protocol: GRPC
-    hosts:
       - "*.grpc.scratchpad.xyz"

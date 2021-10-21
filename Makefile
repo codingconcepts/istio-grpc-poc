@@ -21,7 +21,7 @@ istio_download:
 	mv istio-1.11.4/bin/istioctl.exe istioctl.exe
 
 apply_istio:
-	./istioctl.exe install --set profile=default -y -f manifests/istio.yaml
+	./istioctl.exe install --set profile=demo -y -f manifests/istio.yaml
 	-kubectl label namespace routing-poc istio-injection=enabled
 	-kubectl label namespace routing-poc istio-injection=enabled
 
@@ -66,29 +66,29 @@ delete_gateway:
 # Deployment targets #
 ######################
 
-http_apply_hello:
+apply_http_hello:
 	kubectl apply -f manifests/http.hello.yaml -n routing-poc
 
-http_delete_hello:
+delete_http_hello:
 	kubectl delete -f manifests/http.hello.yaml -n routing-poc
 
-http_apply_goodbye:
+apply_http_goodbye:
 	kubectl apply -f manifests/http.goodbye.yaml -n routing-poc
 
-http_delete_goodbye:
+delete_http_goodbye:
 	kubectl delete -f manifests/http.goodbye.yaml -n routing-poc
 
 
-grpc_apply_hello:
+apply_grpc_hello:
 	kubectl apply -f manifests/grpc.hello.yaml -n routing-poc
 
-grpc_delete_hello:
+delete_grpc_hello:
 	kubectl delete -f manifests/grpc.hello.yaml -n routing-poc
 
-grpc_apply_goodbye:
+apply_grpc_goodbye:
 	kubectl apply -f manifests/grpc.goodbye.yaml -n routing-poc
 
-grpc_delete_goodbye:
+delete_grpc_goodbye:
 	kubectl delete -f manifests/grpc.goodbye.yaml -n routing-poc
 
 #################
@@ -98,5 +98,4 @@ grpc_delete_goodbye:
 check:
 	curl hello.http.scratchpad.xyz
 	curl goodbye.http.scratchpad.xyz
-	grpcurl -plaintext -max-time 3 hello.grpc.scratchpad.xyz:8080 HelloService.Hello
-	grpcurl -plaintext -max-time 3 goodbye.grpc.scratchpad.xyz:8080 GoodbyeService.Goodbye
+	go run apps/grpc/client/main.go
