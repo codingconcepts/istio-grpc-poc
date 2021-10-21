@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: grpc-hello
+  name: grpc-goodbye
   labels:
-    app: grpc-hello
+    app: grpc-goodbye
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: grpc-hello
+      app: grpc-goodbye
   template:
     metadata:
       labels:
-        app: grpc-hello
+        app: grpc-goodbye
     spec:
       containers:
-      - name: grpc-hello
-        image: codingconcepts/grpc-hello
+      - name: grpc-goodbye
+        image: codingconcepts/grpc-goodbye
         ports:
-          - name: grpc-hello
+          - name: grpc-goodbye
             containerPort: 50051
             protocol: TCP
 
@@ -27,10 +27,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: grpc-hello
+  name: grpc-goodbye
 spec:
   selector:
-    app: grpc-hello
+    app: grpc-goodbye
   ports:
     - name: grpc
       protocol: TCP
@@ -42,15 +42,15 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: grpc-hello
+  name: grpc-goodbye
 spec:
   hosts:
-  - hello.grpc.scratchpad.xyz
+  - goodbye.grpc.scratchpad.xyz
   gateways:
   - gateway
   http:
   - route:
     - destination:
-        host: grpc-hello.routing-poc.svc.cluster.local
+        host: grpc-goodbye.routing-poc.svc.cluster.local
         port:
           number: 50051

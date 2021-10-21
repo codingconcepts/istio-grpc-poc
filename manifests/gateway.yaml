@@ -13,8 +13,8 @@ spec:
     hosts:
       - "*.http.scratchpad.xyz"
   - port:
-      number: 8080
-      name: grpc
+      number: 50051
+      name: grpc-plaintext
       protocol: GRPC
     hosts:
       - "*.grpc.scratchpad.xyz"

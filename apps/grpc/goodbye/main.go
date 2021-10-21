@@ -35,7 +35,7 @@ type server struct {
 	pb.UnimplementedGoodbyeServiceServer
 }
 
-func (s *server) Hello(ctx context.Context, _ *pb.GoodbyeRequest) (*pb.GoodbyeResponse, error) {
+func (s *server) Goodbye(ctx context.Context, _ *pb.GoodbyeRequest) (*pb.GoodbyeResponse, error) {
 	return &pb.GoodbyeResponse{
 		Message: "Goodbye, Cruel World!",
 	}, nil

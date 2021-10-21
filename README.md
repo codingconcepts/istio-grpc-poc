@@ -43,14 +43,7 @@ $ make grpc_apply_hello
 
 ### Testing
 
-Run the following commands to assert connectivity to your services:
+Run the following command to assert connectivity to your services:
 ```
-$ curl hello.http.scratchpad.xyz
-Hello, World!
-
-$ curl goodbye.http.scratchpad.xyz
-Goodbye, Cruel World!
-
-$ grpcurl -plaintext -vv hello.grpc.scratchpad.xyz:8080 list
-<NEEDS FIXING>
+$ make check
 ```

@@ -3,21 +3,27 @@
 ########################
 
 protos:
-	@protoc \
+	protoc \
 		-I apps/grpc \
 		--go_out=apps/grpc/pb --go-grpc_out=apps/grpc/pb \
 		apps/grpc/service.proto
 
+apply_namespace:
+	kubectl apply -f manifests/namespace.yaml
+
+delete_namespace:
+	kubectl delete -f manifests/namespace.yaml
+
 istio_download:
-	@wget https://github.com/istio/istio/releases/download/1.11.2/istio-1.11.2-win.zip
-	@unzip istio-1.11.2-win.zip
-	@rm istio-1.11.2-win.zip
-	@mv istio-1.11.2/bin/istioctl.exe istioctl.exe
+	wget https://github.com/istio/istio/releases/download/1.11.4/istio-1.11.4-win.zip
+	unzip istio-1.11.4-win.zip
+	rm istio-1.11.4-win.zip
+	mv istio-1.11.4/bin/istioctl.exe istioctl.exe
 
 apply_istio:
 	./istioctl.exe install --set profile=default -y -f manifests/istio.yaml
-	kubectl label namespace routing-poc istio-injection=enabled
-	kubectl label namespace routing-poc istio-injection=enabled
+	-kubectl label namespace routing-poc istio-injection=enabled
+	-kubectl label namespace routing-poc istio-injection=enabled
 
 delete_istio:
 	./istioctl.exe x uninstall --purge
@@ -50,12 +56,6 @@ build_grpc_goodbye:
 # Shared Kubernetes targets #
 #############################
 
-apply_namespace:
-	kubectl apply -f manifests/namespace.yaml
-
-delete_namespace:
-	kubectl delete -f manifests/namespace.yaml
-
 apply_gateway:
 	kubectl apply -f manifests/gateway.yaml -n routing-poc
 
@@ -84,3 +84,19 @@ grpc_apply_hello:
 
 grpc_delete_hello:
 	kubectl delete -f manifests/grpc.hello.yaml -n routing-poc
+
+grpc_apply_goodbye:
+	kubectl apply -f manifests/grpc.goodbye.yaml -n routing-poc
+
+grpc_delete_goodbye:
+	kubectl delete -f manifests/grpc.goodbye.yaml -n routing-poc
+
+#################
+# Check targets #
+#################
+
+check:
+	curl hello.http.scratchpad.xyz
+	curl goodbye.http.scratchpad.xyz
+	grpcurl -plaintext -max-time 3 hello.grpc.scratchpad.xyz:8080 HelloService.Hello
+	grpcurl -plaintext -max-time 3 goodbye.grpc.scratchpad.xyz:8080 GoodbyeService.Goodbye
